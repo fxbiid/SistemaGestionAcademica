@@ -4,15 +4,114 @@
 #include <string>
 using namespace std;
 
-void cosasGestionAlum();
-     cout<<"Registrar alumno"<<endl;
-     cout<<"Buscar alumno"<<endl;
-     cout<<"Eliminar alumno"<<endl;
+void registrarAlumno() {
+
+}
+
+void buscarAlumno() {
+
+}
+
+void eliminarAlumno() {
+
+}
+
+void cosasGestionAlum() {
+    int Esco = 0;
+    while (Esco != -1) {
+        cout<<"***Gestion alumnos***"<<endl;
+        cout<<"1.Registrar alumno"<<endl;
+        cout<<"2.Buscar alumno"<<endl;
+        cout<<"3.Eliminar alumno"<<endl;
+        cout<<"4.Volver menu principal"<<endl;
+        int escogidoAlumno;
+        cin>>escogidoAlumno;
+        switch(escogidoAlumno) {
+            case 1:
+                registrarAlumno();
+                break;
+            case 2:
+                buscarAlumno();
+                break;
+            case 3:
+                eliminarAlumno();
+                break;
+            case 4:
+                Esco = -1;
+                break;
+
+        }
+    }
+
+}
+
+void crearCurso() {
+
+}
+
+void buscarCurso() {
+
+}
+
+void eliminarCurso() {
+
+}
+
+void cosasGestionCurso() {
+    int corte=0;
+    while (corte!=-1) {
+        cout<<"***Gestion cursos***"<<endl;
+        cout<<"1.Crear curso"<<endl;
+        cout<<"2.Buscar curso"<<endl;
+        cout<<"3.Eliminar curso"<<endl;
+        cout<<"4.Volver menu principal"<<endl;
+        int escogidoCurso;
+        cin>>escogidoCurso;
+        switch(escogidoCurso) {
+            case 1:
+                crearCurso();
+                break;
+            case 2:
+                buscarCurso();
+                break;
+            case 3:
+                eliminarCurso();
+                break;
+            case 4:
+                corte=-1;
+                break;
+        }
+    }
 
 
-void cosasGestionCurso();
+}
 
-void inscribir();
+void inscripcionAlumnosAcurso() {
+
+}
+
+void EliminarAlumnosDeCursos() {
+
+}
+
+void inscribir() {
+    int corte=0;
+    while (corte!=-1) {
+        cout<<"1.Inscribir a alumnos en cursos"<<endl;
+        cout<<"2.Eliminar alumnos de cursos"<<endl;
+        int op;
+        cin>>op;
+        switch(op) {
+            case 1:
+                inscripcionAlumnosAcurso();
+                break;
+            case 2:
+                EliminarAlumnosDeCursos();
+                break;
+        }
+    }
+
+}
 
 // TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 int main() {
