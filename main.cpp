@@ -112,6 +112,15 @@ void inscribir() {
     }
 
 }
+//asignacion de notas a alumnos en cursos especificos
+void gestionDeNotas() {
+
+}
+//Consultar la información de un alumno (cursos inscritos y notas) y calcular
+//promedios de notas por curso y el promedio general del alumno.
+void reportes() {
+
+}
 
 // TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 int main() {
@@ -137,9 +146,10 @@ int main() {
                     inscribir();
                     break;
                 case 4:
-
+                    gestionDeNotas();
                     break;
                 case 5:
+                    reportes();
                     break;
                 case 6:
                     opcion = -1;
