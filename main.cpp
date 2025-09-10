@@ -3,12 +3,166 @@
 #include "Curso.h"
 #include <string>
 using namespace std;
+struct Nodonota {
+    double valorNota;
+    Nodonota* next;
+};
+
+struct NodoAlumno {
+    Alumno* infoAlum;
+  NodoAlumno* next;
+};
+
+struct NodoCurso {
+    Curso* infoCurso;
+    NodoCurso* next;
+};
+
+struct NodoMatricula {
+    Alumno* alumno;
+    Curso* curso;
+    Nodonota* notas;
+    NodoMatricula* next;
+};
+
+//cabezas
+NodoAlumno* cabezaAlum= nullptr;
+NodoCurso* cabezaCurso= nullptr;
+NodoMatricula* cabezaMatri= nullptr;
+
+
+bool confirmarAlumnoPorID(const string & id) {
+    for (NodoAlumno* i = cabezaAlum;i!=nullptr;i=i->next) {
+        if (i->infoAlum->getId()==id) {
+            return true;
+        }
+
+    }
+    return false;
+}
+
+Alumno* obtenerAlumnoPorId(const string & id) {
+    for (NodoAlumno* i = cabezaAlum;i!=nullptr;i=i->next) {
+        if (i->infoAlum->getId()==id) {
+            return i->infoAlum;
+        }
+
+    }
+    return nullptr;
+}
+
+
+bool ConfirmarAlumnoPorNom(const string & nom) {
+    for (NodoAlumno* i = cabezaAlum;i!=nullptr;i=i->next) {
+        if (i->infoAlum->getFirstName()==nom) {
+           return true;
+
+        }
+    }
+    return false;
+}
 
 void registrarAlumno() {
+    cin.ignore(1000,'\n');
+    string id, firstname, lastName, major, enrollmentDate;
+    cout << "Digite el id: ";
+    getline(cin, id);
 
+    //validamos si el id existe
+    if (confirmarAlumnoPorID(id)) {
+        cout << "ya existe un alumno con ese ID";
+        return;
+    }
+    cout << "Ingrese el nombre: ";
+    getline(cin, firstname);
+    cout << "Ingrese el apellido: ";
+    getline(cin, lastName);
+    cout << "Ingrese la carrera: ";
+    getline(cin, major);
+    cout << "Ingrese la fecha de ingreso (day/month/year): ";
+    getline(cin, enrollmentDate);
+
+    Alumno* nuevo = new Alumno(id, firstname, lastName, major, enrollmentDate);
+    cabezaAlum = new NodoAlumno{nuevo,cabezaAlum};
+    cout << "Alumno registrado con exito ";
 }
 
 void buscarAlumno() {
+    if (cabezaAlum==nullptr) {
+        cout<<"No hay alumnos registrados";
+        return;
+    }
+    int opcion;
+    cout << "Buscar por: "
+            "1) ID \n"
+            "2) Nombre \n "
+            "Opcion:";
+    while (true) {
+        if (cin>>opcion&&(opcion==1||opcion==2)) {
+            cin.ignore(1000,'\n');
+            break;
+        }
+        cout << "Opcion invalida. Escribe 1 o 2 ";
+        cin.clear();
+        cin.ignore(1000,'\n');
+    }
+    //id
+    if (opcion==1) {
+        string id;
+        do {
+            cout << "Ingrese el id: ";
+            getline(cin, id);
+            if (id.empty()) {
+                cout << "El Id no puede ser vacio";
+            }
+        }while (id.empty());
+        bool encontrado = false;
+        for (NodoAlumno* i = cabezaAlum;i!=nullptr;i=i->next) {
+            if (i->infoAlum->getId()==id) {
+                cout << "Alumno encontrado con exito ";
+                cout<<"ID:"<<i->infoAlum->getId()<<endl;
+                cout<<"Nombre:"<<i->infoAlum->getFirstName()<<" "<<i->infoAlum->getLastName()<<endl;
+                cout<<"Carrera:"<<i->infoAlum->getMajor()<<endl;
+                cout<<"Fecha de ingreso:"<<i->infoAlum->getEnrollmentDate()<<endl;
+                encontrado = true;
+                break;
+
+            }
+
+        }
+        if (!encontrado) {
+            cout << "No se encontro ningun alumno con ese ID";
+        }
+    }else if (opcion==2) {
+        string nom;
+        do {
+            cout << "Ingrese el nombre: ";
+            getline(cin, nom);
+            if (nom.empty()) {
+                cout << "El nombre no puede ser vacio";
+            }
+        }while (nom.empty());
+        bool encontrado2 = false;
+        for (NodoAlumno* i = cabezaAlum;i!=nullptr;i=i->next) {
+            if (i->infoAlum->getFirstName()==nom) {
+                cout << "Alumno encontrado con exito ";
+                cout<<"ID:"<<i->infoAlum->getId()<<endl;
+                cout<<"Nombre:"<<i->infoAlum->getFirstName()<<" "<<i->infoAlum->getLastName()<<endl;
+                cout<<"Carrera:"<<i->infoAlum->getMajor()<<endl;
+                cout<<"Fecha de ingreso:"<<i->infoAlum->getEnrollmentDate()<<endl;
+                encontrado2 = true;
+                break;
+
+            }
+        }
+        if (!encontrado2) {
+            cout<<"No se encontro ningun alumno con ese nombre ";
+        }
+    }
+
+//no olvidar cambiar el buscar alumno con funciones mas pequeñas para poder reutilizar en otras funciones
+////y tmb hacer funcion de el lista de nombres repetidos
+
 
 }
 
