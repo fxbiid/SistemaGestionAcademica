@@ -3,7 +3,7 @@
 //
 #pragma once
 #include <string>
-#using namespace std;
+using namespace std;
 class Curso {
     private:
     string id;

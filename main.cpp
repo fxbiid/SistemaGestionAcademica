@@ -29,8 +29,23 @@ struct NodoMatricula {
 NodoAlumno* cabezaAlum= nullptr;
 NodoCurso* cabezaCurso= nullptr;
 NodoMatricula* cabezaMatri= nullptr;
+Nodonota* cabezaNota= nullptr;
 
-
+bool alumnoPorNombre(const string& nom) {
+    bool encontrado = false;
+    for (NodoAlumno* i = cabezaAlum;i!=nullptr;i=i->next) {
+        if (i->infoAlum->getFirstName()==nom) {
+            cout << "Alumno encontrado con exito ";
+            cout<<"ID:"<<i->infoAlum->getId()<<endl;
+            cout<<"Nombre:"<<i->infoAlum->getFirstName()<<" "<<i->infoAlum->getLastName()<<endl;
+            cout<<"Carrera:"<<i->infoAlum->getMajor()<<endl;
+            cout<<"Fecha de ingreso:"<<i->infoAlum->getEnrollmentDate()<<endl;
+            cout<<"\n";
+            encontrado = true;
+        }
+    }
+    return encontrado;
+}
 bool confirmarAlumnoPorID(const string & id) {
     for (NodoAlumno* i = cabezaAlum;i!=nullptr;i=i->next) {
         if (i->infoAlum->getId()==id) {
@@ -84,7 +99,7 @@ void registrarAlumno() {
 
     Alumno* nuevo = new Alumno(id, firstname, lastName, major, enrollmentDate);
     cabezaAlum = new NodoAlumno{nuevo,cabezaAlum};
-    cout << "Alumno registrado con exito ";
+    cout << "Alumno registrado con exito \n";
 }
 
 void buscarAlumno() {
@@ -93,7 +108,7 @@ void buscarAlumno() {
         return;
     }
     int opcion;
-    cout << "Buscar por: "
+    cout << "Buscar por:\n"
             "1) ID \n"
             "2) Nombre \n "
             "Opcion:";
@@ -113,50 +128,35 @@ void buscarAlumno() {
             cout << "Ingrese el id: ";
             getline(cin, id);
             if (id.empty()) {
-                cout << "El Id no puede ser vacio";
+                cout << "El Id no puede ser vacio \n ";
             }
         }while (id.empty());
-        bool encontrado = false;
-        for (NodoAlumno* i = cabezaAlum;i!=nullptr;i=i->next) {
-            if (i->infoAlum->getId()==id) {
-                cout << "Alumno encontrado con exito ";
-                cout<<"ID:"<<i->infoAlum->getId()<<endl;
-                cout<<"Nombre:"<<i->infoAlum->getFirstName()<<" "<<i->infoAlum->getLastName()<<endl;
-                cout<<"Carrera:"<<i->infoAlum->getMajor()<<endl;
-                cout<<"Fecha de ingreso:"<<i->infoAlum->getEnrollmentDate()<<endl;
-                encontrado = true;
-                break;
 
-            }
+        Alumno* encontradito = obtenerAlumnoPorId(id);
+        if (encontradito!=nullptr) {
+            cout << "Alumno encontrado con exito ";
+            cout<<"ID:"<<encontradito->getId()<<endl;
+            cout<<"Nombre:"<<encontradito->getFirstName()<<" "<<encontradito->getLastName()<<endl;
+            cout<<"Carrera:"<<encontradito->getMajor()<<endl;
+            cout<<"Fecha de ingreso:"<<encontradito->getEnrollmentDate()<<endl;
+            cout<<"\n";
+        }else {
+            cout<<"No se encontro ningun alumno con ese ID \n ";
+        }
 
-        }
-        if (!encontrado) {
-            cout << "No se encontro ningun alumno con ese ID";
-        }
+
     }else if (opcion==2) {
         string nom;
         do {
             cout << "Ingrese el nombre: ";
             getline(cin, nom);
             if (nom.empty()) {
-                cout << "El nombre no puede ser vacio";
+                cout << "El nombre no puede ser vacio \n ";
             }
         }while (nom.empty());
-        bool encontrado2 = false;
-        for (NodoAlumno* i = cabezaAlum;i!=nullptr;i=i->next) {
-            if (i->infoAlum->getFirstName()==nom) {
-                cout << "Alumno encontrado con exito ";
-                cout<<"ID:"<<i->infoAlum->getId()<<endl;
-                cout<<"Nombre:"<<i->infoAlum->getFirstName()<<" "<<i->infoAlum->getLastName()<<endl;
-                cout<<"Carrera:"<<i->infoAlum->getMajor()<<endl;
-                cout<<"Fecha de ingreso:"<<i->infoAlum->getEnrollmentDate()<<endl;
-                encontrado2 = true;
-                break;
 
-            }
-        }
-        if (!encontrado2) {
-            cout<<"No se encontro ningun alumno con ese nombre ";
+        if (!alumnoPorNombre(nom)) {
+            cout << "No se encontro ningun alumno con ese nombre \n ";
         }
     }
 
@@ -166,9 +166,108 @@ void buscarAlumno() {
 
 }
 
-void eliminarAlumno() {
 
+void borrarListaNotas(Nodonota *&notas) {
+    while (notas!=nullptr) {
+        Nodonota* actual = notas;
+        notas=notas->next;
+        delete actual;
+    }
 }
+
+void eliminarMatricula(Alumno * eliminarAlum) {
+    NodoMatricula* actual = cabezaMatri;
+    NodoMatricula* anterior = nullptr;
+
+    while (actual!=nullptr) {
+        if (actual->alumno==eliminarAlum) {
+            borrarListaNotas(actual->notas);
+            NodoMatricula* NodoEliminar = actual;
+            //si el anterior es vacio es pq tenemos la cabeza como el que queremos eliminar
+            if (anterior==nullptr) {
+                cabezaMatri=actual->next;
+            }else {
+                //estamos al medio o al final
+                anterior->next = actual->next;
+            }
+            // movemos el actual pq borraremos la apuntada anterior
+          actual = actual->next;
+            delete NodoEliminar;
+        }else {
+            //vamos guardando en el nodo que vamos pero en actual lo avanzamos a uno mas para ir moviendonos
+            anterior = actual;
+            actual = actual->next;
+        }
+    }
+}
+
+void printAlumEliminar(Alumno * alumno) {
+    cout <<"ID:"<<alumno->getId()<<endl;
+    cout << "Nombre:"<<alumno->getFirstName()<<endl;
+    cout<<"Apellido:"<<alumno->getLastName()<<endl;
+    cout << "Carrera:"<<alumno->getMajor()<<endl;
+    cout << "Fecha:"<<alumno->getEnrollmentDate()<<endl;
+}
+
+bool borrarAlumnoDelistaPorId(const string & id) {
+    NodoAlumno* actual = cabezaAlum;
+    NodoAlumno* anterior = nullptr;
+    while (actual!=nullptr) {
+        if (actual->infoAlum->getId()==id) {
+            break;
+        }
+        anterior = actual;
+        actual = actual->next;
+
+    }
+    //no encontramos la id
+    if (actual==nullptr) {
+        return false;
+    }
+
+    if (anterior!=nullptr) {
+        anterior->next = actual->next;
+    }else {
+        cabezaAlum=actual->next; //el else pasara si es q el que queremos borrar es la cabeza entonces movemos la cabeza
+    }
+
+    delete actual->infoAlum;
+    delete actual;
+    return true;
+}
+
+void eliminarAlumno() {
+    if (cabezaAlum==nullptr) {
+        cout << "No hay alumnos registrados \n ";
+        return;
+    }
+    string id;
+    do {
+        cout << "Ingrese el id que quiere eliminar: \n ";
+        getline(cin, id);
+        if (id.empty()) {
+            cout << "El id no puede ser vacio \n ";
+        }
+    }while (id.empty());
+
+    Alumno * x = obtenerAlumnoPorId(id);
+    if (x!=nullptr) {
+        cout << "Alumno a eliminar: \n ";
+        printAlumEliminar(x);
+        eliminarMatricula(x);
+
+
+        if (borrarAlumnoDelistaPorId(id)) {
+            cout << "Informacion de alumno eliminadas \n";
+            cout << "\n ";
+        }
+
+    }else {
+        cout << "No se encontro el alumno a eliminar \n";
+    }
+}
+
+
 
 void cosasGestionAlum() {
     int Esco = 0;
@@ -178,6 +277,7 @@ void cosasGestionAlum() {
         cout<<"2.Buscar alumno"<<endl;
         cout<<"3.Eliminar alumno"<<endl;
         cout<<"4.Volver menu principal"<<endl;
+        cout<<"Escoge una opcion: ";
         int escogidoAlumno;
         cin>>escogidoAlumno;
         switch(escogidoAlumno) {
@@ -307,6 +407,7 @@ int main() {
                     break;
                 case 6:
                     opcion = -1;
+                    cout<<"Programa finalizado";
                     break;
             }
         }

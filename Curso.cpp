@@ -1,7 +1,5 @@
 #include "Curso.h"
-//
-// Created by fabil on 30-08-2025.
-//
+
 Curso::Curso(string id, string name, int cantMaxStudents, string carrera, string profe) {
     this->id = id;
     this->name = name;

@@ -12,7 +12,7 @@ private:
     string carrera;
     string inscripcion;
     public:
-    Alumno(string id, string firstname, string lastName, string major, string enrollmentDate);
+    Alumno(string id, string firstname, string apellido, string major, string enrollmentDate);
     string getId();
     string getFirstName();
     string getLastName();
