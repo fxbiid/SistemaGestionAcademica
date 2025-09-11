@@ -29,7 +29,16 @@ struct NodoMatricula {
 NodoAlumno* cabezaAlum= nullptr;
 NodoCurso* cabezaCurso= nullptr;
 NodoMatricula* cabezaMatri= nullptr;
-Nodonota* cabezaNota= nullptr;
+
+int leerOp(int min,int max) {
+    int opcion;
+    while (!(cin >> opcion)||opcion<min || opcion>max) {
+        cout << "Ingresa una opcion correcta "<<min<<" a "<<max << endl;
+        cin.clear();
+        cin.ignore(1000,'\n');
+    }
+    return opcion;
+}
 
 bool alumnoPorNombre(const string& nom) {
     bool encontrado = false;
@@ -78,6 +87,7 @@ bool ConfirmarAlumnoPorNom(const string & nom) {
 }
 
 void registrarAlumno() {
+    cout<<"***Registro de alumnos***"<<endl;
     cin.ignore(1000,'\n');
     string id, firstname, lastName, major, enrollmentDate;
     cout << "Digite el id: ";
@@ -100,11 +110,13 @@ void registrarAlumno() {
     Alumno* nuevo = new Alumno(id, firstname, lastName, major, enrollmentDate);
     cabezaAlum = new NodoAlumno{nuevo,cabezaAlum};
     cout << "Alumno registrado con exito \n";
+    cout<<"\n";
 }
 
 void buscarAlumno() {
     if (cabezaAlum==nullptr) {
-        cout<<"No hay alumnos registrados";
+        cout<<"No hay alumnos registrados \n";
+        cout<<"\n";
         return;
     }
     int opcion;
@@ -112,15 +124,7 @@ void buscarAlumno() {
             "1) ID \n"
             "2) Nombre \n "
             "Opcion:";
-    while (true) {
-        if (cin>>opcion&&(opcion==1||opcion==2)) {
-            cin.ignore(1000,'\n');
-            break;
-        }
-        cout << "Opcion invalida. Escribe 1 o 2 ";
-        cin.clear();
-        cin.ignore(1000,'\n');
-    }
+    opcion = leerOp(1,2);
     //id
     if (opcion==1) {
         string id;
@@ -142,6 +146,7 @@ void buscarAlumno() {
             cout<<"\n";
         }else {
             cout<<"No se encontro ningun alumno con ese ID \n ";
+            cout<<"\n";
         }
 
 
@@ -157,6 +162,7 @@ void buscarAlumno() {
 
         if (!alumnoPorNombre(nom)) {
             cout << "No se encontro ningun alumno con ese nombre \n ";
+            cout<<"\n";
         }
     }
 
@@ -207,6 +213,7 @@ void printAlumEliminar(Alumno * alumno) {
     cout<<"Apellido:"<<alumno->getLastName()<<endl;
     cout << "Carrera:"<<alumno->getMajor()<<endl;
     cout << "Fecha:"<<alumno->getEnrollmentDate()<<endl;
+    cout<<"\n";
 }
 
 bool borrarAlumnoDelistaPorId(const string & id) {
@@ -237,8 +244,10 @@ bool borrarAlumnoDelistaPorId(const string & id) {
 }
 
 void eliminarAlumno() {
+    cout<<"***Eliminacion de alumnos***"<<endl;
     if (cabezaAlum==nullptr) {
         cout << "No hay alumnos registrados \n ";
+        cout<<"\n";
         return;
     }
     string id;
@@ -264,6 +273,7 @@ void eliminarAlumno() {
 
     }else {
         cout << "No se encontro el alumno a eliminar \n";
+        cout<<"\n";
     }
 }
 
@@ -278,8 +288,7 @@ void cosasGestionAlum() {
         cout<<"3.Eliminar alumno"<<endl;
         cout<<"4.Volver menu principal"<<endl;
         cout<<"Escoge una opcion: ";
-        int escogidoAlumno;
-        cin>>escogidoAlumno;
+        int escogidoAlumno = leerOp(1,4);
         switch(escogidoAlumno) {
             case 1:
                 registrarAlumno();
@@ -299,16 +308,224 @@ void cosasGestionAlum() {
 
 }
 
-void crearCurso() {
+bool confirmarCursoPorId(const string & id) {
+    for (NodoCurso*i = cabezaCurso;i!=nullptr;i=i->next) {
+        if (i->infoCurso->getId()==id) {
+            return true;
+        }
+    }
+    return false;
+}
 
+void crearCurso() {
+    cout<<"***Creacion de cursos***"<<endl;
+    cin.ignore(1000,'\n');
+    string id,nom,carrera,profe;
+    int cantMaxEstu;
+    cout << "Ingrese el codigo del curso: ";
+    getline(cin,id);
+    //preguntamos si existe ya ese codigo
+    if (confirmarCursoPorId(id)) {
+        cout << "El ID ya existe en un curso";
+    }
+
+    cout << "Ingrese el nombre del curso: ";
+    getline(cin,nom);
+    cout << "Ingrese el cupo maximo de estudiantes: ";
+    while (!(cin>>cantMaxEstu)||cantMaxEstu<=0) {
+        cout<<"Ingrese un cupo mayor a 0";
+        cin.clear();
+        cin.ignore(1000,'\n');
+    }
+    cin.ignore(1000,'\n');
+    cout << "Ingrese el carrera del curso: ";
+    getline(cin,carrera);
+    cout << "Ingrese el profe: ";
+    getline(cin,profe);
+
+    Curso* nuevo = new Curso(id,nom,cantMaxEstu,carrera,profe);
+    cabezaCurso = new NodoCurso{nuevo,cabezaCurso};
+    cout << "El curso se creo exitosamente \n";
+    cout<<"\n";
+}
+
+Curso * obtenerCursoPorId(const string & id) {
+    for (NodoCurso*i = cabezaCurso;i!=nullptr;i=i->next) {
+        if (i->infoCurso->getId()==id) {
+            return i->infoCurso;
+        }
+    }
+    return nullptr;
+}
+
+bool cursoPorNombre(const string & nom) {
+    bool encontrado = false;
+    for (NodoCurso*i = cabezaCurso;i!=nullptr;i=i->next) {
+        if (i->infoCurso->getName()==nom) {
+            cout<<"ID:"<<i->infoCurso->getId()<<endl;
+            cout<<"Nombre:"<<i->infoCurso->getName()<<endl;
+            cout<<"Cupo:"<<i->infoCurso->getCantMaxStudents()<<endl;
+            cout<<"Carrera:"<<i->infoCurso->getCarrera()<<endl;
+            cout<<"Profesor:"<<i->infoCurso->getProfe()<<endl;
+            cout<<"\n";
+            encontrado = true;
+        }
+    }
+    return encontrado;
 }
 
 void buscarCurso() {
+    if (cabezaCurso==nullptr) {
+        cout << "No hay cursos registrados";
+        cout<<"\n";
+        return;
+    }
+
+    int opcion;
+    cout<<"Buscar curso: \n"
+          "1) ID \n"
+          "2) Nombre \n"
+          "Opcion: ";
+    opcion = leerOp(1,2);
+    if (opcion==1) {
+        string id;
+        do {
+            cout<<"ingrese el id: ";
+            getline(cin,id);
+            if (id.empty()) {
+                cout << "El ID no puede ser vacio";
+                cin.clear();
+                cin.ignore(1000,'\n');
+            }
+        }while (id.empty());
+
+        Curso* encon = obtenerCursoPorId(id);
+        if (encon!=nullptr) {
+            cout << "Curso encontrado con exito \n ";
+            cout<<"ID:"<<encon->getId()<<endl;
+            cout<<"Nombre:"<<encon->getName()<<endl;
+            cout<<"Cupo:"<<encon->getCantMaxStudents()<<endl;
+            cout<<"Carrera:"<<encon->getCarrera()<<endl;
+            cout<<"Profesor:"<<encon->getProfe()<<endl;
+            cout<<"\n";
+        }else {
+            cout<<"No se encontro ningun curso con ese ID \n ";
+            cout<<"\n";
+        }
+    }else if(opcion==2) {
+        string nom;
+        do {
+            cout << "Ingrese el nombre: ";
+            getline(cin, nom);
+            if (nom.empty()) {
+                cout << "El nombre no puede ser vacio \n ";
+                cin.clear();
+                cin.ignore(1000,'\n');
+            }
+        }while (nom.empty());
+
+        if (!cursoPorNombre(nom)) {
+            cout << "No se encontro ningun curso con ese nombre \n ";
+            cout<<"\n";
+        }
+    }
+}
+
+void printCursoEliminar(Curso * curso) {
+    cout << "Curso a eliminar: \n ";
+    cout <<"ID:"<<curso->getId() << endl;
+    cout <<"Nombre:"<<curso->getName() << endl;
+    cout<<"Cupo:"<<curso->getCantMaxStudents() << endl;
+    cout<<"Carrera:"<<curso->getCarrera() << endl;
+    cout<<"Profesor:"<<curso->getProfe() << endl;
+    cout<<"\n";
+}
+
+void eliminarMatriculaDeCurso(Curso * cursoElim) {
+    NodoMatricula* actual = cabezaMatri;
+    NodoMatricula* anterior = nullptr;
+
+    while (actual!=nullptr) {
+        if (actual->curso==cursoElim) {
+            borrarListaNotas(actual->notas);
+            NodoMatricula* NodoEliminar = actual;
+            //si el anterior es vacio es pq tenemos la cabeza como el que queremos eliminar
+            if (anterior==nullptr) {
+                cabezaMatri=actual->next;
+            }else {
+                //estamos al medio o al final
+                anterior->next = actual->next;
+            }
+            // movemos el actual pq borraremos la apuntada anterior
+            actual = actual->next;
+            delete NodoEliminar;
+        }else {
+            //vamos guardando en el nodo que vamos pero en actual lo avanzamos a uno mas para ir moviendonos
+            anterior = actual;
+            actual = actual->next;
+        }
+    }
+}
+
+bool borrarCursoDelistaPorId(const string & id) {
+    NodoCurso* actual = cabezaCurso;
+    NodoCurso* anterior = nullptr;
+    while (actual!=nullptr) {
+        if (actual->infoCurso->getId()==id) {
+            break;
+        }
+        anterior = actual;
+        actual = actual->next;
+
+    }
+    //no encontramos la id
+    if (actual==nullptr) {
+        return false;
+    }
+
+    if (anterior!=nullptr) {
+        anterior->next = actual->next;
+    }else {
+        cabezaCurso=actual->next; //el else pasara si es q el que queremos borrar es la cabeza entonces movemos la cabeza
+    }
+
+    delete actual->infoCurso;
+    delete actual;
+    return true;
 
 }
 
 void eliminarCurso() {
+    if (cabezaCurso==nullptr) {
+        cout << "No hay cursos registrados";
+        cout<<"\n";
+        return;
+    }
+    string id;
+    do {
+        cout << "Ingrese el id que quiere eliminar: \n ";
+        getline(cin, id);
+        if (id.empty()) {
+            cout << "El id no puede ser vacio \n ";
+        }
+    }while (id.empty());
 
+    Curso * cursito = obtenerCursoPorId(id);
+    if (cursito!=nullptr) {
+
+        printCursoEliminar(cursito);
+        eliminarMatriculaDeCurso(cursito);
+
+
+        if (borrarCursoDelistaPorId(id)) {
+            cout << "Informacion del curso eliminada \n";
+            cout << "\n ";
+        }
+
+    }else {
+        cout << "No se encontro el curso a eliminar \n";
+        cout<<"\n";
+    }
 }
 
 void cosasGestionCurso() {
@@ -319,8 +536,8 @@ void cosasGestionCurso() {
         cout<<"2.Buscar curso"<<endl;
         cout<<"3.Eliminar curso"<<endl;
         cout<<"4.Volver menu principal"<<endl;
-        int escogidoCurso;
-        cin>>escogidoCurso;
+        cout<<"Escoge una opcion: ";
+        int escogidoCurso = leerOp(1,4);
         switch(escogidoCurso) {
             case 1:
                 crearCurso();
@@ -351,10 +568,10 @@ void EliminarAlumnosDeCursos() {
 void inscribir() {
     int corte=0;
     while (corte!=-1) {
+        cout<<"***Incripcion de cursos***"<<endl;
         cout<<"1.Inscribir a alumnos en cursos"<<endl;
         cout<<"2.Eliminar alumnos de cursos"<<endl;
-        int op;
-        cin>>op;
+        int op = leerOp(1,2);
         switch(op) {
             case 1:
                 inscripcionAlumnosAcurso();
@@ -380,6 +597,7 @@ void reportes() {
 int main() {
         int opcion = 0;
         while (opcion != -1) {
+            cout<<"***Sistema Gestion Academica***"<<endl;
             cout<<"1. Gestion de alumnos"<<endl;
             cout<<"2. Gestion de cursos"<<endl;
             cout<<"3. Inscripcion de cursos"<<endl;
@@ -387,8 +605,7 @@ int main() {
             cout<<"5. Reportes"<<endl;
             cout<<"6. Salir"<<endl;
             cout<<"Escoge una opcion: ";
-            int escogido;
-            cin>>escogido;
+            int escogido = leerOp(1,6);
             switch (escogido) {
                 case 1:
                     cosasGestionAlum();
