@@ -2,28 +2,12 @@
 #include "Alumno.h"
 #include "Curso.h"
 #include <string>
+#include "NodoAlumno.h"
+#include "NodoCurso.h"
+#include "NodoMatricula.h"
+#include "Nodonota.h"
 using namespace std;
-struct Nodonota {
-    double valorNota;
-    Nodonota* next;
-};
 
-struct NodoAlumno {
-    Alumno* infoAlum;
-  NodoAlumno* next;
-};
-
-struct NodoCurso {
-    Curso* infoCurso;
-    NodoCurso* next;
-};
-
-struct NodoMatricula {
-    Alumno* alumno;
-    Curso* curso;
-    Nodonota* notas;
-    NodoMatricula* next;
-};
 
 //cabezas
 NodoAlumno* cabezaAlum= nullptr;
@@ -37,6 +21,7 @@ int leerOp(int min,int max) {
         cin.clear();
         cin.ignore(1000,'\n');
     }
+    cin.ignore(1000,'\n');
     return opcion;
 }
 
@@ -108,7 +93,7 @@ void registrarAlumno() {
     getline(cin, enrollmentDate);
 
     Alumno* nuevo = new Alumno(id, firstname, lastName, major, enrollmentDate);
-    cabezaAlum = new NodoAlumno{nuevo,cabezaAlum};
+    cabezaAlum = new NodoAlumno(nuevo,cabezaAlum);
     cout << "Alumno registrado con exito \n";
     cout<<"\n";
 }
@@ -238,7 +223,6 @@ bool borrarAlumnoDelistaPorId(const string & id) {
         cabezaAlum=actual->next; //el else pasara si es q el que queremos borrar es la cabeza entonces movemos la cabeza
     }
 
-    delete actual->infoAlum;
     delete actual;
     return true;
 }
@@ -344,7 +328,7 @@ void crearCurso() {
     getline(cin,profe);
 
     Curso* nuevo = new Curso(id,nom,cantMaxEstu,carrera,profe);
-    cabezaCurso = new NodoCurso{nuevo,cabezaCurso};
+    cabezaCurso = new NodoCurso(nuevo,cabezaCurso);
     cout << "El curso se creo exitosamente \n";
     cout<<"\n";
 }
@@ -488,8 +472,6 @@ bool borrarCursoDelistaPorId(const string & id) {
     }else {
         cabezaCurso=actual->next; //el else pasara si es q el que queremos borrar es la cabeza entonces movemos la cabeza
     }
-
-    delete actual->infoCurso;
     delete actual;
     return true;
 
@@ -557,11 +539,170 @@ void cosasGestionCurso() {
 
 }
 
-void inscripcionAlumnosAcurso() {
+bool alumnoExisteEnCurso(Alumno * alumno,Curso* curso) {
+    for (NodoMatricula* i=cabezaMatri;i!=nullptr;i=i->next) {
+        if (i->alumno==alumno && i->curso==curso) {
+            return true;
+        }
+    }
+    return false;
 
 }
 
+int contInscritosCur(Curso * curso) {
+    int cont=0;
+    for (NodoMatricula*i=cabezaMatri;i!=nullptr;i=i->next) {
+        if (i->curso==curso) {
+            cont++;
+        }
+    }
+    return cont;
+}
+
+
+void inscripcionAlumnosAcurso() {
+    cout<<"Inscripcion de alumnos a cursos \n";
+    if (cabezaCurso==nullptr) {
+        cout << "No hay cursos registrados";
+        return;
+    }
+    if (cabezaAlum==nullptr) {
+        cout << "No hay alumnos registrados";
+        return;
+    }
+    cin.ignore(1000,'\n');
+    string idCurso,idAlumno;
+
+    do {
+        cout << "Ingrese el ID del curso: ";
+        getline(cin, idCurso);
+
+        if (idCurso.empty()) {
+            cout << "El ID de curso no puede ser vacio \n ";
+        }
+    }while (idCurso.empty());
+
+    do {
+        cout << "Ingrese el ID del alumno: ";
+        getline(cin, idAlumno);
+
+        if (idAlumno.empty()) {
+            cout << "El ID de alumno no puede ser vacio \n ";
+        }
+    }while (idCurso.empty());
+
+    Curso* curso = obtenerCursoPorId(idCurso);
+    if (curso!=nullptr) {
+        cout<<"No se encontro el curso de ese ID"<<idCurso<<"\n";
+        return;
+    }
+
+    Alumno* alumno = obtenerAlumnoPorId(idAlumno);
+
+    if (alumno!=nullptr) {
+        cout<<"No se encontro el alumno de ese ID"<<idAlumno<<"\n";
+        return;
+    }
+    //si la carrera del alumno no es la misma del curso
+    if (alumno->getMajor() != curso->getCarrera()) {
+        cout<<"La carrera del alumno ("<<alumno->getMajor()<<") no coincide con la del curso("<<curso->getCarrera()<<")\n";
+        return;
+    }
+    //si el alumno ya existe en el curso
+    if (alumnoExisteEnCurso(alumno,curso)) {
+        cout<<"El alumno ya esta inscrito a ese curso \n";
+        return;
+    }
+    //si el curso esta lleno
+    int inscritosCurso = contInscritosCur(curso);
+    if (inscritosCurso>=curso->getCantMaxStudents()) {
+        cout<<"El curso esta lleno su cupo maximo es "<<curso->getCantMaxStudents();
+        return;
+    }
+
+    NodoMatricula* nuevo = new NodoMatricula(alumno,curso,cabezaMatri);
+    cabezaMatri = nuevo;
+    cout<<"Inscripcion se ha realizado exitosamente \n";
+}
+//borrar matricula al curso
+bool borrarMatricula(Alumno * alumno, Curso * curso) {
+    NodoMatricula* actual = cabezaMatri;
+    NodoMatricula* anterior = nullptr;
+
+    while (actual!=nullptr) {
+        if (actual->alumno==alumno && actual->curso==curso) {
+            borrarListaNotas(actual->notas);
+
+            if (anterior==nullptr) {
+                cabezaMatri = actual->next;
+            }else {
+                anterior->next = actual->next;
+            }
+            delete actual;
+            return true;
+        }
+        anterior = actual;
+        actual = actual->next;
+
+    }
+    return false;
+}
+
 void EliminarAlumnosDeCursos() {
+    cout<<"***Eliminar alumnos de cursos \n";
+    if (cabezaCurso==nullptr) {
+        cout << "No hay cursos registrados";
+        return;
+    }
+    if (cabezaAlum==nullptr) {
+        cout << "No hay alumnos registrados";
+    }
+
+    cin.ignore(1000,'\n');
+
+    string idCurso,idAlumno;
+
+    do {
+        cout << "Ingrese el ID del curso: ";
+        getline(cin, idCurso);
+        if (idCurso.empty()) {
+            cout<<"El ID del curso no puede ser vacio \n";
+
+        }
+    }while (idCurso.empty());
+
+    do {
+        cout << "Ingrese el ID del alumno: ";
+        getline(cin, idAlumno);
+        if (idAlumno.empty()) {cout<<"El ID del alumno no puede ser vacio \n";}
+    }while (idCurso.empty());
+
+    Curso* curso = obtenerCursoPorId(idCurso);
+    if (curso!=nullptr) {
+        cout<<"No se encontro curso con ese ID "<<idCurso;
+        return;
+    }
+
+    Alumno* alumno = obtenerAlumnoPorId(idAlumno);
+
+    if (alumno!=nullptr) {
+        cout<<"No se encontro alumno con ese ID "<<idAlumno;
+        return;
+    }
+
+    //primero hay q verificar que el alumno este inscrito pq si no pa que
+    if (!(alumnoExisteEnCurso(alumno,curso))) {
+        cout<<"El alumno no esta inscrito en ese curso";
+        return;
+    }
+
+    //ahora si esta en el curso lo echamos
+    if (borrarMatricula(alumno,curso)) {
+        cout<<"Alumno borrado del curso exitosamente \n";
+        cout<<"Alumno: "<<alumno->getFirstName()<<" "<<alumno->getLastName()<<"\n";
+        cout<<"Curso: "<<curso->getName()<<"\n";
+        cout<<"\n";
+    }
 
 }
 
@@ -571,7 +712,8 @@ void inscribir() {
         cout<<"***Incripcion de cursos***"<<endl;
         cout<<"1.Inscribir a alumnos en cursos"<<endl;
         cout<<"2.Eliminar alumnos de cursos"<<endl;
-        int op = leerOp(1,2);
+        cout<<"3.Volver a menu principal"<<endl;
+        int op = leerOp(1,3);
         switch(op) {
             case 1:
                 inscripcionAlumnosAcurso();
@@ -579,17 +721,75 @@ void inscribir() {
             case 2:
                 EliminarAlumnosDeCursos();
                 break;
+            case 3:
+                corte=-1;
+                break;
         }
     }
 
 }
 //asignacion de notas a alumnos en cursos especificos
 void gestionDeNotas() {
+    cout<<"***Gestion de notas***\n"<<endl;
+    if (cabezaCurso==nullptr) {
+        cout << "No hay cursos registrados";
+        return;
+    }
+
+    if (cabezaAlum==nullptr) {
+        cout << "No hay alumnos registrados";
+        return;
+    }
+
+    cin.ignore(1000,'\n');
+
+    string idCurso,idAlumno;
+
+    do {
+        cout << "Ingrese el ID del curso: ";
+        getline(cin, idCurso);
+        if (idCurso.empty()) {
+            cout<<"El ID del curso no puede ser vacio \n";
+
+        }
+    }while (idCurso.empty());
+
+    do {
+        cout << "Ingrese el ID del alumno: ";
+        getline(cin, idAlumno);
+        if (idAlumno.empty()) {cout<<"El ID del alumno no puede ser vacio \n";}
+    }while (idCurso.empty());
+
+    Curso* curso = obtenerCursoPorId(idCurso);
+    if (curso!=nullptr) {
+        cout<<"No hay un curso con ese ID";
+        return;
+    }
+
+    Alumno* alumno = obtenerAlumnoPorId(idAlumno);
+    if (alumno!=nullptr) {
+        cout<<"No hay un alumno con ese ID";
+        return;
+    }
+    //tambien ver si esta inscrito en ese curso
+    if (!alumnoExisteEnCurso(alumno,curso)) {
+        cout<<"El alumno no esta inscrito en ese curso";
+        return;
+    }
+    int opcion=0;
+    while (opcion!=1) {
+        cout<<"Alumno: "<<alumno->getFirstName()<<" "<<alumno->getLastName();
+        cout<<"Curso: "<<curso->getName()<< curso->getId()<<curso->getCarrera()<<"\n";
+        cout<<"\n";
+        //terminar
+    }
+
 
 }
 //Consultar la información de un alumno (cursos inscritos y notas) y calcular
 //promedios de notas por curso y el promedio general del alumno.
 void reportes() {
+
 
 }
 
