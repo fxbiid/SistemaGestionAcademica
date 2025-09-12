@@ -1,12 +1,13 @@
 #pragma once
-#include"Alumno.h"
+
+class Alumno;
 
 class NodoAlumno {
     public:
     Alumno* infoAlum;
     NodoAlumno* next;
 
-    NodoAlumno(Alumno*alumno,NodoAlumno* sig=nullptr);
+    NodoAlumno(Alumno* infoAlum,NodoAlumno* sig=nullptr);
     ~NodoAlumno();
 };
 

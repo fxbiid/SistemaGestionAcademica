@@ -5,6 +5,7 @@
 #include "Alumno.h"
 #include "Curso.h"
 #include "Lista.h"
+#include "ControlError.h"
 using namespace std;
 
 
@@ -12,17 +13,6 @@ NodoMatricula::NodoMatricula(Alumno* alumno,Curso* curso,NodoMatricula* sig)
     : alumno(alumno),curso(curso),next(sig){}
 
 
-
-int leerOp(int min,int max) {
-    int opcion;
-    while (!(cin >> opcion)||opcion<min || opcion>max) {
-        cout << "Ingresa una opcion correcta "<<min<<" a "<<max << endl;
-        cin.clear();
-        cin.ignore(1000,'\n');
-    }
-    cin.ignore(1000,'\n');
-    return opcion;
-}
 //buscar matricula especifica de alumno con curso
 NodoMatricula* NodoMatricula::buscarMatriEspe(Alumno* alumno,Curso* curso) {
     for (NodoMatricula* i=cabezaMatri;i!=nullptr;i=i->next) {
@@ -69,7 +59,6 @@ void NodoMatricula::inscripcionAlumnosAcurso() {
         cout << "No hay alumnos registrados";
         return;
     }
-    cin.ignore(1000,'\n');
     string idCurso,idAlumno;
 
     do {
@@ -157,8 +146,6 @@ void NodoMatricula::EliminarAlumnosDeCursos() {
     if (cabezaAlum==nullptr) {
         cout << "No hay alumnos registrados";
     }
-
-    cin.ignore(1000,'\n');
 
     string idCurso,idAlumno;
 
@@ -249,17 +236,16 @@ void agregarNota(NodoMatricula * matricula, double notita) {
 void NodoMatricula::gestionDeNotas() {
     cout<<"***Gestion de notas***\n"<<endl;
     if (cabezaCurso==nullptr) {
-        cout << "No hay cursos registrados";
+        cout << "No hay cursos registrados \n";
+        cout<<"\n";
         return;
     }
 
     if (cabezaAlum==nullptr) {
-        cout << "No hay alumnos registrados";
+        cout << "No hay alumnos registrados \n";
+        cout<<"\n";
         return;
     }
-
-    cin.ignore(1000,'\n');
-
     string idCurso,idAlumno;
 
     do {

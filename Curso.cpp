@@ -1,6 +1,8 @@
 #include "Curso.h"
 #include "Lista.h"
 #include "NodoMatricula.h"
+#include"NodoCurso.h"
+#include"ControlError.h"
 
 Curso::Curso(string id, string name, int cantMaxStudents, string carrera, string profe) {
     this->id = id;
@@ -8,16 +10,6 @@ Curso::Curso(string id, string name, int cantMaxStudents, string carrera, string
     this->cantMaxStudents = cantMaxStudents;
     this->carrera = carrera;
     this->profe = profe;
-}
-int leerOp(int min,int max) {
-    int opcion;
-    while (!(cin >> opcion)||opcion<min || opcion>max) {
-        cout << "Ingresa una opcion correcta "<<min<<" a "<<max << endl;
-        cin.clear();
-        cin.ignore(1000,'\n');
-    }
-    cin.ignore(1000,'\n');
-    return opcion;
 }
 
 Curso* Curso::obtenerCursoPorId(const string & id) {
@@ -39,7 +31,6 @@ bool Curso::confirmarCursoPorId(const string & id) {
 }
 void Curso::crearCurso() {
     cout<<"***Creacion de cursos***"<<endl;
-    cin.ignore(1000,'\n');
     string id,nom,carrera,profe;
     int cantMaxEstu;
     cout << "Ingrese el codigo del curso: ";

@@ -17,4 +17,8 @@ add_executable(Taller1EstructuraFabianDiaz main.cpp
         NodoMatricula.cpp
         NodoMatricula.h
         Lista.cpp
-        Lista.h)
+        Lista.h
+        ControlError.cpp
+        ControlError.h
+        ReportesTodo.cpp
+        ReportesTodo.h)

@@ -5,7 +5,7 @@
 #include "Nodonota.h"
 
 Nodonota::Nodonota(double valorNota, Nodonota *next)
-    :valorNota(valorNota), siguiente(sig){}
+    :valorNota(valorNota), next(next){}
 
 
 

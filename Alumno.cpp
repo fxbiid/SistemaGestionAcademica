@@ -2,6 +2,8 @@
 #include "Alumno.h"
 #include "NodoMatricula.h"
 #include "Lista.h"
+#include "NodoAlumno.h"
+#include"ControlError.h"
 
 
 Alumno::Alumno(string id, string firstname, string lastName, string major, string enrollmentDate) {
@@ -10,16 +12,6 @@ Alumno::Alumno(string id, string firstname, string lastName, string major, strin
     this->apellido = lastName;
     this->carrera = major;
     this->inscripcion = enrollmentDate;
-}
-int leerOp(int min,int max) {
-    int opcion;
-    while (!(cin >> opcion)||opcion<min || opcion>max) {
-        cout << "Ingresa una opcion correcta "<<min<<" a "<<max << endl;
-        cin.clear();
-        cin.ignore(1000,'\n');
-    }
-    cin.ignore(1000,'\n');
-    return opcion;
 }
 
 bool Alumno::borrarAlumnoDelistaPorId(const string & id) {
@@ -74,6 +66,7 @@ void Alumno::eliminarMatricula(Alumno * eliminarAlum) {
     }
 }
 void Alumno::printAlumEliminar(Alumno * alumno) {
+    cout<<"\n";
     cout <<"ID:"<<alumno->getId()<<endl;
     cout << "Nombre:"<<alumno->getFirstName()<<endl;
     cout<<"Apellido:"<<alumno->getLastName()<<endl;
@@ -130,7 +123,6 @@ Alumno* Alumno::obtenerAlumnoPorId(const string & id) {
 
 void Alumno::registrarAlumno() {
     cout<<"***Registro de alumnos***"<<endl;
-    cin.ignore(1000,'\n');
     string id, firstname, lastName, major, enrollmentDate;
     cout << "Digite el id: ";
     getline(cin, id);

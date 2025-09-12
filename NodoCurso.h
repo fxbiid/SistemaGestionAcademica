@@ -1,5 +1,5 @@
 #pragma once
-#include"Curso.h"
+class Curso;
 
 
 class NodoCurso {

@@ -1,7 +1,7 @@
 #pragma once
-#include "NodoAlumno.h"
-#include"NodoMatricula.h"
-#include "NodoCurso.h"
+class NodoAlumno;
+class NodoCurso;
+class NodoMatricula;
 
 extern NodoAlumno* cabezaAlum;
 extern NodoCurso* cabezaCurso;
