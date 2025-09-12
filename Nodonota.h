@@ -4,8 +4,8 @@
 
 class Nodonota {
     public:
-    double nota;
-    NodoNota* next;
+    double valorNota;
+    Nodonota* next;
 
 
     Nodonota(double nota,Nodonota*sig=nullptr);

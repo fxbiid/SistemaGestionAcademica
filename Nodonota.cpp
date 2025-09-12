@@ -4,8 +4,8 @@
 
 #include "Nodonota.h"
 
-Nodonota::Nodonota(double nota, Nodonota *sig)
-    :valorNota(nota), siguiente(sig){}
+Nodonota::Nodonota(double valorNota, Nodonota *next)
+    :valorNota(valorNota), siguiente(sig){}
 
 
 

@@ -15,4 +15,6 @@ add_executable(Taller1EstructuraFabianDiaz main.cpp
         NodoCurso.cpp
         NodoCurso.h
         NodoMatricula.cpp
-        NodoMatricula.h)
+        NodoMatricula.h
+        Lista.cpp
+        Lista.h)

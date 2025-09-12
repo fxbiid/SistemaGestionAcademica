@@ -1,9 +1,10 @@
-//
-// Created by fabil on 30-08-2025.
-//
+
 #pragma once
+#include<iostream>
 #include <string>
+#include "NodoAlumno.h"
 using namespace std;
+
 class Alumno {
 private:
     string id;
@@ -18,6 +19,18 @@ private:
     string getLastName();
     string getMajor();
     string getEnrollmentDate();
+
+    static void registrarAlumno();
+    static void buscarAlumno();
+    static void eliminarAlumno();
+
+    static bool confirmarAlumnoPorID(const string & id);
+    static Alumno* obtenerAlumnoPorId(const string & id);
+    static bool alumnoPorNombre(const string& nom);
+    static bool ConfirmarAlumnoPorNom(const string & nom);
+    static void printAlumEliminar(Alumno * alumno);
+    static void eliminarMatricula(Alumno * eliminarAlum);
+    static bool borrarAlumnoDelistaPorId(const string & id);
 
 
 };
