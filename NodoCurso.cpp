@@ -1,6 +1,6 @@
 
 #include "NodoCurso.h"
-#include "curso.h"
+#include "Curso.h"
 
 NodoCurso::NodoCurso(Curso *curso, NodoCurso *sig)
     :infoCurso(curso),next(sig){}

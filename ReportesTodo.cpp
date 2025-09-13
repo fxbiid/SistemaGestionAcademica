@@ -1,5 +1,5 @@
 #include "ReportesTodo.h"
-#include "lista.h"
+#include "Lista.h"
 #include "Alumno.h"
 #include "Curso.h"
 #include "NodoAlumno.h"
