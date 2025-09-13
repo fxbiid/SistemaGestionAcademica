@@ -15,52 +15,25 @@ void ReportesTodo::reportes() {
     while (opcion!=-1) {
         cout<<"***Reportes***"<<endl;
         cout<<"1. Obtener todos los alumnos de una carrera"<<endl;
-        cout<<"2. Obtener todos los cursos en los que un alumno está inscrito"<<endl;
+        cout<<"2. Obtener todos los cursos en los que un alumno esta inscrito"<<endl;
         cout<<"3. Promedio de notas de un alumno en un curso"<<endl;
         cout<<"4. Promedio general de un alumno"<<endl;
         cout<<"5. Volver menu principal"<<endl;
         cout<<"Ingrese una opcion: ";
         int escogido = leerOp(1,5);
         if (escogido==1) {
-            string carrera;
-            cout<<"Ingrese carrera: ";
-            getline(cin,carrera);
+            string carrera = leerCarrera("Ingrese carrera: ");
             getAlumnosCarrera(carrera);
 
         }else if(escogido==2) {
 
-            string idAlumno;
-            do {
-                cout<<"Ingrese un id de alumno: ";
-                if (idAlumno.empty()) {
-                    cout<<"El ID no puede ser vacio: ";
-                    cin.clear();
-                    cin.ignore(1000,'\n');
-
-                }
-            }while (idAlumno.empty());
+            string idAlumno = leerId("Ingrese un id de alumno: ");
             getCursosAlumno(idAlumno);
         }else if(escogido==3) {
-            string idCurso, idAlumno;
-            do {
-                cout<<"Ingrese un id del alumno: ";
-                if (idAlumno.empty()) {
-                    cout<<"El ID no puede ser vacio: ";
-                    cin.clear();
-                    cin.ignore(1000,'\n');
+            string idAlumno= leerId("Ingrese el ID del alumno: ");
+            string idCurso = leerId("Ingrese el ID del curso: ");
 
-                }
-            }while (idAlumno.empty());
 
-            do {
-                cout<<"Ingrese un id del curso: ";
-                if (idCurso.empty()) {
-                    cout<<"El ID no puede ser vacio: ";
-                    cin.clear();
-                    cin.ignore(1000,'\n');
-
-                }
-            }while (idCurso.empty());
             double promedio= 0.0;
             if (promedioNotasAlumCurso(idAlumno,idCurso,promedio)) {
                 cout<< "Promedio del alumno en el curso:"<<promedio<<endl;
@@ -71,16 +44,7 @@ void ReportesTodo::reportes() {
             }
 
         }else if(escogido==4) {
-            string idAlumno;
-            do {
-                cout<<"Ingrese un id del alumno: ";
-                if (idAlumno.empty()) {
-                    cout<<"El ID no puede ser vacio: ";
-                    cin.clear();
-                    cin.ignore(1000,'\n');
-
-                }
-            }while (idAlumno.empty());
+            string idAlumno= leerId("Ingrese el ID del alumno: ");
             double promedioGeneral= 0.0;
             if (calcuPromediGeneralAlumno(idAlumno,promedioGeneral)) {
                 cout<<"Promedio general del alumno: "<<promedioGeneral<<endl;
@@ -98,8 +62,10 @@ void ReportesTodo::reportes() {
 
 void ReportesTodo::getAlumnosCarrera(const string& carrera) {
     bool encontrado = false;
+    string nomCambiado = cambiarAminus(arreglarPalabra(carrera));
     for (NodoAlumno* i=cabezaAlum;i!=nullptr;i=i->next) {
-        if (i->infoAlum->getMajor()==carrera) {
+        string nomNodo= cambiarAminus(arreglarPalabra(i->infoAlum->getMajor()));
+        if (nomNodo==nomCambiado) {
             cout<<"ID: "<<i->infoAlum->getId()<<endl;
             cout<<"Nombre: "<<i->infoAlum->getFirstName()<<" " << i->infoAlum->getLastName()<<endl;
             cout<<"Ingreso: "<<i->infoAlum->getEnrollmentDate()<<endl;
@@ -124,7 +90,8 @@ void ReportesTodo::getCursosAlumno(const string& idAlumno) {
         }
     }
     if (!encontrado) {
-        cout<<"El alumno "<<idAlumno<<"no tiene cursos inscritos";
+        cout<<"El alumno "<<idAlumno<<" no tiene cursos inscritos";
+        cout<<"\n";
     }
 
 }

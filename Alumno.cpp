@@ -127,7 +127,7 @@ Alumno* Alumno::obtenerAlumnoPorId(const string & id) {
 void Alumno::registrarAlumno() {
     cout<<"***Registro de alumnos***"<<endl;
 
-    string id = leerVacio("Digite el id: ");
+    string id = leerId("Digite el id: ");
 
     //validamos si el id existe
     if (confirmarAlumnoPorID(id)) {

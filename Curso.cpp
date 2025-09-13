@@ -60,8 +60,8 @@ bool Curso:: cursoPorNombre(const string & nom) {
     bool encontrado = false;
     string nomCambiado = cambiarAminus(arreglarPalabra(nom));
     for (NodoCurso*i = cabezaCurso;i!=nullptr;i=i->next) {
-        string nomNodo = cambiarAminus(arreglarPalabra(i->infoCurso->getId()));
-        if (nomNodo==nomCambiado) {
+        string nomNodo = cambiarAminus(arreglarPalabra(i->infoCurso->getName()));
+        if (nomCambiado==nomNodo) {
             cout<<"ID:"<<i->infoCurso->getId()<<endl;
             cout<<"Nombre:"<<i->infoCurso->getName()<<endl;
             cout<<"Cupo:"<<i->infoCurso->getCantMaxStudents()<<endl;
@@ -181,7 +181,7 @@ void Curso::eliminarCurso() {
     }
     string id;
     do {
-        cout << "Ingrese el id que quiere eliminar: \n ";
+        cout << "Ingrese el id que quiere eliminar: ";
         getline(cin, id);
         if (id.empty()) {
             cout << "El id no puede ser vacio \n ";

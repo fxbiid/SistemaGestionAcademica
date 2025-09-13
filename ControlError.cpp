@@ -137,6 +137,7 @@ string leerNombre(const string& palabra) {
         string nombre = leerVacio(palabra);
         if (!validarSoloEspaciosyLetras(nombre)) {
             cout<<"El nombre solo puede tener espacios y letras";
+            cout<<"\n";
             continue;
         }
         return arreglarPalabra(nombre);
@@ -177,17 +178,12 @@ static bool verificarBisiesto(int ye) {
 }
 
 bool validarFecha(const string &palabra) {
-    int separador =0;
-    for (char c: palabra) {
-        if (c=='/') {
-            separador++;
-        }
-        if (separador!=2) {
+        if (palabra.empty()) return false;
+        if (count(palabra.begin(),palabra.end(),'/')!=2) {
             return false;
         }
-
         size_t parte1 = palabra.find('/');
-        size_t parte2 = palabra.find('/',parte1);
+        size_t parte2 = palabra.find('/',parte1+1);
         if (parte1==string::npos||parte2==string::npos) {
             return false;
         }
@@ -198,11 +194,9 @@ bool validarFecha(const string &palabra) {
             return false;
         }
         auto digitos = [](const string & x) {
-          for (char c: x) {
-              if (!isdigit((unsigned char)c)) return false;
-              return true;
-          }
+            return all_of(x.begin(),x.end(),[](unsigned char c){return isdigit(c);});
         };
+
         if (!digitos(dia)||!digitos(mes)||!digitos(year)) {
             return false;
         }
@@ -229,8 +223,8 @@ bool validarFecha(const string &palabra) {
         if (di<1||di>diasMes) {
             return false;
         }
-        return true;
+        return di>=1&&di<=diasMes;
     }
-}
+
 
 
