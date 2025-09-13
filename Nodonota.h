@@ -1,7 +1,4 @@
 #pragma once
-
-
-
 class Nodonota {
     public:
     double valorNota;

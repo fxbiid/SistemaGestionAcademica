@@ -1,4 +1,3 @@
-
 #include "Alumno.h"
 #include "NodoMatricula.h"
 #include "Lista.h"
@@ -76,8 +75,10 @@ void Alumno::printAlumEliminar(Alumno * alumno) {
 }
 
 bool Alumno::ConfirmarAlumnoPorNom(const string & nom) {
+    string nomCambiado = cambiarAminus(arreglarPalabra(nom));
     for (NodoAlumno* i = cabezaAlum;i!=nullptr;i=i->next) {
-        if (i->infoAlum->getFirstName()==nom) {
+        string nomNodo = cambiarAminus(arreglarPalabra(i->infoAlum->getFirstName()));
+        if (nomNodo==nomCambiado) {
             return true;
 
         }
@@ -86,9 +87,11 @@ bool Alumno::ConfirmarAlumnoPorNom(const string & nom) {
 }
 
 bool Alumno::alumnoPorNombre(const string& nom) {
+    string nombreCambiado = cambiarAminus(arreglarPalabra(nom));
     bool encontrado = false;
     for (NodoAlumno* i = cabezaAlum;i!=nullptr;i=i->next) {
-        if (i->infoAlum->getFirstName()==nom) {
+        string nomNodo = cambiarAminus(arreglarPalabra(i->infoAlum->getFirstName()));
+        if (nomNodo==nombreCambiado) {
             cout << "Alumno encontrado con exito ";
             cout<<"ID:"<<i->infoAlum->getId()<<endl;
             cout<<"Nombre:"<<i->infoAlum->getFirstName()<<" "<<i->infoAlum->getLastName()<<endl;
@@ -123,25 +126,24 @@ Alumno* Alumno::obtenerAlumnoPorId(const string & id) {
 
 void Alumno::registrarAlumno() {
     cout<<"***Registro de alumnos***"<<endl;
-    string id, firstname, lastName, major, enrollmentDate;
-    cout << "Digite el id: ";
-    getline(cin, id);
+
+    string id = leerVacio("Digite el id: ");
 
     //validamos si el id existe
     if (confirmarAlumnoPorID(id)) {
         cout << "ya existe un alumno con ese ID";
         return;
     }
-    cout << "Ingrese el nombre: ";
-    getline(cin, firstname);
-    cout << "Ingrese el apellido: ";
-    getline(cin, lastName);
-    cout << "Ingrese la carrera: ";
-    getline(cin, major);
-    cout << "Ingrese la fecha de ingreso (day/month/year): ";
-    getline(cin, enrollmentDate);
+   string nom = leerNombre("Ingrese el nombre: ");
 
-    Alumno* nuevo = new Alumno(id, firstname, lastName, major, enrollmentDate);
+    string apellido= leerApellido("Ingrese el apellido: ");
+
+    string carrera= leerCarrera("Ingrese la carrera: ");
+
+    string fecha = leerFecha("Ingrese la fecha de ingreso (day/month/year): ");
+
+
+    Alumno* nuevo = new Alumno(id, nom, apellido, carrera, fecha);
     cabezaAlum = new NodoAlumno(nuevo,cabezaAlum);
     cout << "Alumno registrado con exito \n";
     cout<<"\n";
@@ -161,15 +163,7 @@ void Alumno::buscarAlumno() {
     opcion = leerOp(1,2);
     //id
     if (opcion==1) {
-        string id;
-        do {
-            cout << "Ingrese el id: ";
-            getline(cin, id);
-            if (id.empty()) {
-                cout << "El Id no puede ser vacio \n ";
-            }
-        }while (id.empty());
-
+        string id = leerId("Ingrese el id: ");
         Alumno* encontradito = obtenerAlumnoPorId(id);
         if (encontradito!=nullptr) {
             cout << "Alumno encontrado con exito ";
@@ -185,24 +179,12 @@ void Alumno::buscarAlumno() {
 
 
     }else if (opcion==2) {
-        string nom;
-        do {
-            cout << "Ingrese el nombre: ";
-            getline(cin, nom);
-            if (nom.empty()) {
-                cout << "El nombre no puede ser vacio \n ";
-            }
-        }while (nom.empty());
-
+        string nom = leerNombre("Ingrese el nombre: ");
         if (!alumnoPorNombre(nom)) {
             cout << "No se encontro ningun alumno con ese nombre \n ";
             cout<<"\n";
         }
     }
-
-    //no olvidar cambiar el buscar alumno con funciones mas pequeñas para poder reutilizar en otras funciones
-    ////y tmb hacer funcion de el lista de nombres repetidos
-
 
 }
 
@@ -213,15 +195,7 @@ void Alumno::eliminarAlumno() {
         cout<<"\n";
         return;
     }
-    string id;
-    do {
-        cout << "Ingrese el id que quiere eliminar: \n ";
-        getline(cin, id);
-        if (id.empty()) {
-            cout << "El id no puede ser vacio \n ";
-        }
-    }while (id.empty());
-
+    string id = leerId("Ingrese el id: ");
     Alumno * x = obtenerAlumnoPorId(id);
     if (x!=nullptr) {
         cout << "Alumno a eliminar: \n ";

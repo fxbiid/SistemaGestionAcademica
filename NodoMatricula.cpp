@@ -6,6 +6,7 @@
 #include "Curso.h"
 #include "Lista.h"
 #include "ControlError.h"
+#include <cctype>
 using namespace std;
 
 
@@ -59,25 +60,9 @@ void NodoMatricula::inscripcionAlumnosAcurso() {
         cout << "No hay alumnos registrados";
         return;
     }
-    string idCurso,idAlumno;
+    string idCurso= leerId("Ingrese el ID del curso");
 
-    do {
-        cout << "Ingrese el ID del curso: ";
-        getline(cin, idCurso);
-
-        if (idCurso.empty()) {
-            cout << "El ID de curso no puede ser vacio \n ";
-        }
-    }while (idCurso.empty());
-
-    do {
-        cout << "Ingrese el ID del alumno: ";
-        getline(cin, idAlumno);
-
-        if (idAlumno.empty()) {
-            cout << "El ID de alumno no puede ser vacio \n ";
-        }
-    }while (idAlumno.empty());
+    string idAlumno = leerId("Ingrese el ID del alumno: ");
 
     Curso* curso = Curso::obtenerCursoPorId(idCurso);
     if (curso==nullptr) {
@@ -147,22 +132,8 @@ void NodoMatricula::EliminarAlumnosDeCursos() {
         cout << "No hay alumnos registrados";
     }
 
-    string idCurso,idAlumno;
-
-    do {
-        cout << "Ingrese el ID del curso: ";
-        getline(cin, idCurso);
-        if (idCurso.empty()) {
-            cout<<"El ID del curso no puede ser vacio \n";
-
-        }
-    }while (idCurso.empty());
-
-    do {
-        cout << "Ingrese el ID del alumno: ";
-        getline(cin, idAlumno);
-        if (idAlumno.empty()) {cout<<"El ID del alumno no puede ser vacio \n";}
-    }while (idAlumno.empty());
+    string idCurso = leerId("Ingrese el ID del curso: ");
+    string idAlumno = leerId("Ingrese el ID del alumno: ");
 
     Curso* curso = Curso::obtenerCursoPorId(idCurso);
     if (curso==nullptr) {
@@ -246,22 +217,9 @@ void NodoMatricula::gestionDeNotas() {
         cout<<"\n";
         return;
     }
-    string idCurso,idAlumno;
+    string idCurso = leerId("Ingrese el ID del curso: ");
 
-    do {
-        cout << "Ingrese el ID del curso: ";
-        getline(cin, idCurso);
-        if (idCurso.empty()) {
-            cout<<"El ID del curso no puede ser vacio \n";
-
-        }
-    }while (idCurso.empty());
-
-    do {
-        cout << "Ingrese el ID del alumno: ";
-        getline(cin, idAlumno);
-        if (idAlumno.empty()) {cout<<"El ID del alumno no puede ser vacio \n";}
-    }while (idAlumno.empty());
+    string idAlumno = leerId("Ingrese el ID del alumno: ");
 
     Curso* curso = Curso::obtenerCursoPorId(idCurso);
     if (curso==nullptr) {

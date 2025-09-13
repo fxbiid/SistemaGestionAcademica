@@ -31,30 +31,25 @@ bool Curso::confirmarCursoPorId(const string & id) {
 }
 void Curso::crearCurso() {
     cout<<"***Creacion de cursos***"<<endl;
-    string id,nom,carrera,profe;
-    int cantMaxEstu;
-    cout << "Ingrese el codigo del curso: ";
-    getline(cin,id);
-    //preguntamos si existe ya ese codigo
-    if (confirmarCursoPorId(id)) {
-        cout << "El ID ya existe en un curso";
-    }
 
-    cout << "Ingrese el nombre del curso: ";
-    getline(cin,nom);
+    string id = leerId("Ingrese el ID del curso: ");
+    if (confirmarCursoPorId(id)) {
+        cout<<"EL ID ya existe en un curso \n";
+        return;
+    }
+    string nom = leerNombre("Ingresa el nombre del curso: ");
+    int cantMaxStudents;
     cout << "Ingrese el cupo maximo de estudiantes: ";
-    while (!(cin>>cantMaxEstu)||cantMaxEstu<=0) {
+    while (!(cin>>cantMaxStudents)||cantMaxStudents<=0) {
         cout<<"Ingrese un cupo mayor a 0";
         cin.clear();
         cin.ignore(1000,'\n');
     }
     cin.ignore(1000,'\n');
-    cout << "Ingrese el carrera del curso: ";
-    getline(cin,carrera);
-    cout << "Ingrese el profe: ";
-    getline(cin,profe);
+    string carrera = leerCarrera("Ingrese el carrera del curso: ");
+    string profe = leerNombre("Ingrese el profe: ");
 
-    Curso* nuevo = new Curso(id,nom,cantMaxEstu,carrera,profe);
+    Curso* nuevo = new Curso(id,nom,cantMaxStudents,carrera,profe);
     cabezaCurso = new NodoCurso(nuevo,cabezaCurso);
     cout << "El curso se creo exitosamente \n";
     cout<<"\n";
@@ -63,8 +58,10 @@ void Curso::crearCurso() {
 
 bool Curso:: cursoPorNombre(const string & nom) {
     bool encontrado = false;
+    string nomCambiado = cambiarAminus(arreglarPalabra(nom));
     for (NodoCurso*i = cabezaCurso;i!=nullptr;i=i->next) {
-        if (i->infoCurso->getName()==nom) {
+        string nomNodo = cambiarAminus(arreglarPalabra(i->infoCurso->getId()));
+        if (nomNodo==nomCambiado) {
             cout<<"ID:"<<i->infoCurso->getId()<<endl;
             cout<<"Nombre:"<<i->infoCurso->getName()<<endl;
             cout<<"Cupo:"<<i->infoCurso->getCantMaxStudents()<<endl;
@@ -91,17 +88,7 @@ void Curso:: buscarCurso() {
           "Opcion: ";
     opcion = leerOp(1,2);
     if (opcion==1) {
-        string id;
-        do {
-            cout<<"ingrese el id: ";
-            getline(cin,id);
-            if (id.empty()) {
-                cout << "El ID no puede ser vacio";
-                cin.clear();
-                cin.ignore(1000,'\n');
-            }
-        }while (id.empty());
-
+        string id = leerId("Ingrese el ID del curso: ");
         Curso* encon = obtenerCursoPorId(id);
         if (encon!=nullptr) {
             cout << "Curso encontrado con exito \n ";
@@ -116,16 +103,7 @@ void Curso:: buscarCurso() {
             cout<<"\n";
         }
     }else if(opcion==2) {
-        string nom;
-        do {
-            cout << "Ingrese el nombre: ";
-            getline(cin, nom);
-            if (nom.empty()) {
-                cout << "El nombre no puede ser vacio \n ";
-                cin.clear();
-                cin.ignore(1000,'\n');
-            }
-        }while (nom.empty());
+        string nom= leerNombre("Ingrese el nombre del curso: ");
 
         if (!cursoPorNombre(nom)) {
             cout << "No se encontro ningun curso con ese nombre \n ";

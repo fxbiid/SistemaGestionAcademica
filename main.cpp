@@ -3,6 +3,7 @@
 #include "Curso.h"
 #include "NodoMatricula.h"
 #include "ControlError.h"
+#include "ReportesTodo.h"
 using namespace std;
 
 static void cosasGestionAlum() {
@@ -86,13 +87,6 @@ static void inscribir() {
 
 }
 
-//Consultar la información de un alumno (cursos inscritos y notas) y calcular
-//promedios de notas por curso y el promedio general del alumno.
-void reportes() {
-
-
-}
-
 int main() {
         int opcion = 0;
         while (opcion != -1) {
@@ -119,7 +113,7 @@ int main() {
                     NodoMatricula::gestionDeNotas();
                     break;
                 case 5:
-                    reportes();
+                    ReportesTodo::reportes();
                     break;
                 case 6:
                     opcion = -1;
